@@ -10,10 +10,23 @@ async function registrarUser(data: any) {
     const especialChars = /[!@#$%^&*(),.?":{}|<>]/;
 
         const user = new Users(data);
+
+        
+
         if (user.cpf) {
             const existingUser = await Users.findOne({ cpf: user.cpf });
             if (existingUser) {
                 throw new Error("Usuário já existente");
+            }
+
+            if (user.cpf.length !== 11 || Number.isNaN(Number(user.cpf))) {
+            throw new Error("O cpf deve ter apenas 11 dígitos e apenas números");
+            }
+
+            const existingEmail = await Users.findOne({ email: user.email });
+
+            if (existingEmail) {
+                throw new Error("Email já cadastrado");
             }
 
             if (user.senha.length < 8 || !especialChars.test(user.senha)) {
@@ -39,12 +52,12 @@ async function loginUser(email: string, senha: string) {
     const user = await Users.findOne({ email: email });
     
     if (!user) {
-        console.log('Usuário não encontrado.');
+        
         throw new Error('Usuário não encontrado.');
     } else {
         const senhaValida = await bcrypt.compare(senha, user.senha);
         if (!senhaValida) {
-            console.log('Senha ou email incorreto.');
+            
             throw new Error('Senha OU email incorreto.');
         } else {
             console.log('Login bem-sucedido.');
@@ -58,4 +71,15 @@ async function loginUser(email: string, senha: string) {
     }
 };
 
-export { registrarUser, loginUser };
+async function buscarUserByCpf(cpfDigitado: string) {
+  const user = await Users.findOne({ cpf: cpfDigitado });
+
+  if (!user) throw new Error('Não existe usuário com esse CPF.');
+
+  const idade = differenceInYears(new Date(), new Date(user.dataNascimento));
+  const { nomeCompleto, cpf, email, telefone, bairro, cidade } = user.toObject();
+
+  return { nomeCompleto, cpf, email, telefone, bairro, cidade, idade };
+}
+
+export { registrarUser, loginUser, buscarUserByCpf };

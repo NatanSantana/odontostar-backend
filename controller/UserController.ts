@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express';
-import { registrarUser, loginUser } from '../service/UserService.ts';  
+import { registrarUser, loginUser, buscarUserByCpf } from '../service/UserService.ts';  
 
 export async function createUser(req: Request, res: Response) {
   try {
@@ -7,7 +7,7 @@ export async function createUser(req: Request, res: Response) {
     return res.status(201).json({ user });
 
   } catch (error: any) {
-    return res.status(400).json({ message: user});
+    return res.status(400).json({ message: error.message});
   }
 }
 
@@ -15,13 +15,19 @@ export async function login(req: Request, res: Response) {
   try {
     const { email, senha } = req.body;
     const user = await loginUser(email, senha);
+    return res.status(200).json({ token: user });
 
-    if (!user) {
-      return res.status(401).json({ message: 'CPF ou senha inválidos' });
-    }
-
-    return res.status(200).json({ message: 'Login bem-sucedido', user });
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return res.status(401).json({ message: error.message });
+  }
+}
+
+export async function buscarUserCpf(req: Request, res: Response) {
+  try {
+    const { cpf } =  req.query
+    const user = await buscarUserByCpf(cpf)
+    return res.status(200).json(user)
+  } catch (error: any) {
+    return res.status(404).json({message: error.message})
   }
 }

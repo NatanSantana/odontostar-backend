@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/UserRoutes.ts';
+import dentistasRouter from './routes/DentistasRouter.ts'
 import cors from 'cors';
 
 dotenv.config();
@@ -27,6 +28,8 @@ app.listen(PORT, () => {
 });
 
 app.use('/api', userRoutes);
+app.use('/api', dentistasRouter)
+
 
 
 

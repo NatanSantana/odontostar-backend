@@ -1,17 +1,78 @@
-import Dentistas from "../models/Dentistas";
+import Dentistas from "../models/Dentistas.ts";
+import DatasDisponiveis from "../models/DatasDisponiveis.ts";
+import { parse, isBefore, isValid, isAfter } from "date-fns";
+
+
 
 
 async function registrarDentista(data: any) {
-    try {
         const dentista = new Dentistas(data);
         if (isNaN(Number(dentista.consultorio))) {
-            console.log('Número do consultório deve ser um número válido.');
-            return;
+            throw new Error('Número do consultório deve ser um número válido.');
         }
         await dentista.save();
-    } catch (error) {
-        console.error('Error ao registrar dentista:', error);
-    }
+        return dentista;
+    
 };
 
-export { registrarDentista };
+
+async function lancarDatas(data: any) {
+    const horarioMaximo = parse("17:00", "HH:mm", new Date())
+    const horarioMinimo = parse("08:00", "HH:mm", new Date())
+    const datas = new DatasDisponiveis(data);
+    if (isBefore(datas.data, new Date())) {
+        throw new Error("Não é possível marcar uma data que já passou")
+    }
+
+    const horarioRecebido = parse(datas.horario, "HH:mm", new Date())
+
+    if (!isValid(horarioRecebido)) {
+        throw new Error(horarioRecebido + " Este formato de horário não é permitido")
+
+    }
+
+    if (isAfter(horarioRecebido, horarioMaximo) || isBefore(horarioRecebido, horarioMinimo)) {
+        throw new Error("Um horário só pode ser registrado se for DEPOIS das 08:00 e ANTES das 17:00")
+    }
+
+    const dentistaBuscado = await Dentistas.findOne({ _id: datas.dentista  });
+    if (!dentistaBuscado) {
+        throw new Error("Não foi possível encontrar o Dentista procurado")
+    }
+
+    return await datas.save();
+
+}
+
+async function mostrarDatasByEspecialidade(especialidadeRecebida: any) {
+    const dentistaByEspecialidade = await Dentistas.findOne({ especialidade: especialidadeRecebida })
+    if (!dentistaByEspecialidade) {
+        throw new Error("Não há dentistas com essa especialidade")
+    }
+
+    const datas = await DatasDisponiveis.find({ dentista: dentistaByEspecialidade._id }).populate('dentista');
+    
+    if (datas.length === 0) {
+        throw new Error("Não há Datas Disponíveis")
+    }
+
+    return datas;
+}
+
+
+
+async function listarDentistaById(id: any) {
+    const dentista = await Dentistas.findOne( { _id: id });
+    if (!dentista) {
+        throw new Error("Não foi possível encontrar um dentista com esse ID")
+    }
+    return dentista;
+
+}
+
+
+
+
+
+
+export { registrarDentista, lancarDatas, mostrarDatasByEspecialidade, listarDentistaById };
