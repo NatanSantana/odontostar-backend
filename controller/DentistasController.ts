@@ -32,6 +32,7 @@ export async function mostrarDatas(req: Request, res: Response) {
 
         const { especialidade } = req.query;
         const request = await mostrarDatasByEspecialidade(especialidade as string);
+        
         return res.status(201).json({ request })
 
     } catch(error: any) {

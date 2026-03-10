@@ -11,7 +11,8 @@ const userSchema = new Schema({
     cidade: { type: String, required: true },
     logradouro: { type: String, required: true },
     telefone: { type: String, required: true },
-    dataNascimento: { type: Date, required: true }
+    dataNascimento: { type: Date, required: true },
+    role: {type: String}
 });
 
 export default model('User', userSchema);

@@ -23,6 +23,8 @@ async function registrarUser(data: any) {
             throw new Error("O cpf deve ter apenas 11 dígitos e apenas números");
             }
 
+            if(!user.email.endsWith("@gmail.com")) throw new Error("Email inválido")
+
             const existingEmail = await Users.findOne({ email: user.email });
 
             if (existingEmail) {
@@ -62,11 +64,13 @@ async function loginUser(email: string, senha: string) {
         } else {
             console.log('Login bem-sucedido.');
             const token = jwt.sign(
-                { id: user._id, email: user.email },
+                { id: user._id, email: user.email, role: user.role },
                 SECRET,
                 { expiresIn: '2h' }
             )
-            return { token };
+            return { token: token,
+                    role: user.role
+             };
         }
     }
 };

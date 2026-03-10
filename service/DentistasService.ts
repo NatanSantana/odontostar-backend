@@ -1,6 +1,6 @@
 import Dentistas from "../models/Dentistas.ts";
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
-import { parse, isBefore, isValid, isAfter } from "date-fns";
+import { parse, isBefore, isValid, isAfter, addHours, addMinutes } from "date-fns";
 
 
 
@@ -19,6 +19,10 @@ async function registrarDentista(data: any) {
 async function lancarDatas(data: any) {
     const horarioMaximo = parse("17:00", "HH:mm", new Date())
     const horarioMinimo = parse("08:00", "HH:mm", new Date())
+    const horaConsulta = parse(data.horario, "HH:mm", new Date())
+    data.data = addHours(data.data, horaConsulta.getHours())
+    data.data = addMinutes(data.data, horaConsulta.getMinutes());
+
     const datas = new DatasDisponiveis(data);
     if (isBefore(datas.data, new Date())) {
         throw new Error("Não é possível marcar uma data que já passou")
@@ -45,6 +49,9 @@ async function lancarDatas(data: any) {
 }
 
 async function mostrarDatasByEspecialidade(especialidadeRecebida: any) {
+    
+    const datasVencidas = await DatasDisponiveis.deleteMany({ data: { $lt: new Date() } });
+
     const dentistaByEspecialidade = await Dentistas.findOne({ especialidade: especialidadeRecebida })
     if (!dentistaByEspecialidade) {
         throw new Error("Não há dentistas com essa especialidade")
@@ -56,6 +63,7 @@ async function mostrarDatasByEspecialidade(especialidadeRecebida: any) {
         throw new Error("Não há Datas Disponíveis")
     }
 
+    
     return datas;
 }
 
