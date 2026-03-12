@@ -64,7 +64,7 @@ async function loginUser(email: string, senha: string) {
         } else {
             console.log('Login bem-sucedido.');
             const token = jwt.sign(
-                { id: user._id, email: user.email, role: user.role },
+                { id: user._id, email: user.email, role: user.role, cpf: user.cpf },
                 SECRET,
                 { expiresIn: '2h' }
             )

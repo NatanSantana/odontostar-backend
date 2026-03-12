@@ -48,4 +48,27 @@ async function listarConsultasPendentes() {
     return consultas
 }
 
-export {registrarConsulta, marcarComoRealizada, listarConsultasPendentes}
+async function cancelarConsulta(data: any) {
+    const dataConvertida = parse(data.diaConsulta, 'dd/MM/yyyy', new Date());
+    const dataFormatada = format(dataConvertida, 'yyyy-MM-dd');
+    data.diaConsulta = dataFormatada
+
+    const horaConsulta = parse(data.hora, "HH:mm", new Date())
+    data.diaConsulta = addHours(data.diaConsulta, horaConsulta.getHours());
+    data.diaConsulta = addMinutes(data.diaConsulta, horaConsulta.getMinutes());
+
+    const consultaDeletada = await ConsultaAgendada.findOneAndDelete({cpf: data.cpfPaciente, data: data.diaConsulta, hora: data.hora})
+    if (!consultaDeletada) throw new Error("Não foi possível encontrar uma consulta com esses dados")
+
+    return ("Consulta Desmarcada")
+
+}
+
+async function listarConsultasByCpf(cpfPaciente: string) {
+    const consultas = await ConsultaAgendada.find({realizada: false, cpf: cpfPaciente})
+    if (consultas.length === 0) throw new Error("Não há consultas")
+    return consultas
+}
+
+
+export {registrarConsulta, marcarComoRealizada, listarConsultasPendentes, cancelarConsulta, listarConsultasByCpf}

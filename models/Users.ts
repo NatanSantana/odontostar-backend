@@ -12,7 +12,7 @@ const userSchema = new Schema({
     logradouro: { type: String, required: true },
     telefone: { type: String, required: true },
     dataNascimento: { type: Date, required: true },
-    role: {type: String}
+    role: {type: String, required: true}
 });
 
 export default model('User', userSchema);
