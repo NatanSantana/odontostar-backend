@@ -1,6 +1,6 @@
 import Users from '../models/Users.ts';
 import bcrypt from 'bcrypt';
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, parse} from 'date-fns';
 import jwt from 'jsonwebtoken'
 
 const SECRET = (process.env.SECRET_JWT || '');
@@ -8,10 +8,9 @@ const SECRET = (process.env.SECRET_JWT || '');
 
 async function registrarUser(data: any) {
     const especialChars = /[!@#$%^&*(),.?":{}|<>]/;
-
         const user = new Users(data);
 
-        
+        const dataNascimentoParsed = parse(user.dataNascimento.toString(), 'dd/MM/yyyy', new Date());
 
         if (user.cpf) {
             const existingUser = await Users.findOne({ cpf: user.cpf });
@@ -35,7 +34,7 @@ async function registrarUser(data: any) {
                 throw new Error('Senha inválida. A senha deve ter pelo menos 8 caracteres e conter pelo menos um caractere especial.');
             }
 
-            if (differenceInYears(new Date(), new Date(user.dataNascimento)) < 18) {
+            if (differenceInYears(new Date(), dataNascimentoParsed) < 18) {
                 throw new Error('Usuário deve ter pelo menos 18 anos.');
             }
 
