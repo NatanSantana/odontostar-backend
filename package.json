@@ -4,10 +4,10 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-  "build": "tsc",
-  "start": "node dist/server.js",
+  "build": "echo 'no build'",
+  "start": "npx ts-node --esm server.ts",
   "dev": "ts-node server.ts"
-},
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
