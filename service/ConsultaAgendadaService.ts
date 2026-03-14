@@ -4,10 +4,6 @@ import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
 async function registrarConsulta(data: any) {
     if(!data) throw new Error("Nenhum campo de consulta pode ser null");
 
-    const horaConsulta = parse(data.hora, "HH:mm", new Date())
-    data.data = addHours(data.data, horaConsulta.getHours());
-    data.data = addMinutes(data.data, horaConsulta.getMinutes());
-
     const consulta = new ConsultaAgendada(data);
     
     if(!consulta.email.endsWith("@gmail.com")) throw new Error("Email inválido")
