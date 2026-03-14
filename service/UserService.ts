@@ -8,11 +8,10 @@ const SECRET = (process.env.SECRET_JWT || '');
 
 async function registrarUser(data: any) {
     const especialChars = /[!@#$%^&*(),.?":{}|<>]/;
-        const user = new Users(data);
-        console.log("a1 " + user.dataNascimento)
-        const dataNascimentoParsed = parse(user.dataNascimento.toString(), 'dd/MM/yyyy', new Date());
 
-        console.log("a2 " + dataNascimentoParsed)
+        const dataNascimentoParsed = parse(data.dataNascimento.toString(), 'dd/MM/yyyy', new Date());
+
+        const user = new Users(data);
 
         if (user.cpf) {
             const existingUser = await Users.findOne({ cpf: user.cpf });
