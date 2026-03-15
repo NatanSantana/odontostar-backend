@@ -22,6 +22,7 @@ async function lancarDatas(data: any) {
     const horaConsulta = parse(data.horario, "HH:mm", new Date())
     data.data = addHours(data.data, horaConsulta.getHours())
     data.data = addMinutes(data.data, horaConsulta.getMinutes());
+    data.marcada = false;
 
     const datas = new DatasDisponiveis(data);
     if (isBefore(datas.data, new Date())) {
@@ -57,7 +58,7 @@ async function mostrarDatasByEspecialidade(especialidadeRecebida: any) {
         throw new Error("Não há dentistas com essa especialidade")
     }
 
-    const datas = await DatasDisponiveis.find({ dentista: dentistaByEspecialidade._id }).populate('dentista');
+    const datas = await DatasDisponiveis.find({ dentista: dentistaByEspecialidade._id, marcada: false }).populate('dentista');
     
     if (datas.length === 0) {
         throw new Error("Não há Datas Disponíveis")
