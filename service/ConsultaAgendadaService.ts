@@ -9,7 +9,7 @@ async function registrarConsulta(data: any) {
     if(!consulta.email.endsWith("@gmail.com")) throw new Error("Email inválido")
     
     const consultaDuplicada = await ConsultaAgendada.findOne({ data: data.data, hora: data.hora, procedimento: data.procedimento });
-    if (consultaDuplicada) return ("Já existe uma Consulta Marcada para esse horário")
+    if (consultaDuplicada) throw new Error("Já existe uma Consulta Marcada para esse horário")
 
     await consulta.save()
     console.log("Consulta Registrada: " + consulta);
