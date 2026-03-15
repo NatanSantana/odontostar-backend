@@ -12,6 +12,7 @@ async function registrarConsulta(data: any) {
     if (consultaDuplicada) return ("Já existe uma Consulta Marcada para esse horário")
 
     await consulta.save()
+    console.log("Consulta Registrada: " + consulta);
     return ("Consulta Marcada com Sucesso");
 
 }
