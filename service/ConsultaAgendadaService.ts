@@ -1,6 +1,7 @@
 import  ConsultaAgendada  from '../models/ConsultaAgendada.ts'
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
+import { Types } from 'mongoose';
 import  { montarData } from "../utilidades/functions.ts";
 
 async function registrarConsulta(data: any) {
@@ -15,7 +16,7 @@ async function registrarConsulta(data: any) {
 
     const dataMontada = montarData(data.data, data.hora);
 
-    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: dataMontada, horario: data.hora, dentista: data.dentistaId }, {marcada: true})
+    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, {marcada: true})
     if (!atualizarHorarioMarcado) {
         throw new Error("Não existe consulta com essas informações")
     }
