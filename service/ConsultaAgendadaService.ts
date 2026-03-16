@@ -1,4 +1,5 @@
 import  ConsultaAgendada  from '../models/ConsultaAgendada.ts'
+import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
 
 async function registrarConsulta(data: any) {
@@ -10,6 +11,11 @@ async function registrarConsulta(data: any) {
     
     const consultaDuplicada = await ConsultaAgendada.findOne({ data: data.data, hora: data.hora, procedimento: data.procedimento });
     if (consultaDuplicada) throw new Error("Já existe uma Consulta Marcada para esse horário")
+
+    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: data.data, horario: data.hora, dentista: data.dentistaId }, {marcada: true})
+    if (!atualizarHorarioMarcado) {
+        throw new Error("Não existe consulta com essas informações")
+    }
 
     await consulta.save()
     console.log("Consulta Registrada: " + consulta);
