@@ -7,6 +7,7 @@ const consultaAgendadaSchema = new Schema({
     procedimento: {type: String, required: true},
     data: {type: Date, required: true},
     hora: {type: String, required: true},
+    nomeDentista: {type: String},
     realizada: {type: Boolean, required: true}
 })
 

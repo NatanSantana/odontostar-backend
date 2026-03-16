@@ -1,4 +1,5 @@
 import  ConsultaAgendada  from '../models/ConsultaAgendada.ts'
+import Dentistas from "../models/Dentistas.ts";
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
 import { Types } from 'mongoose';
@@ -19,6 +20,11 @@ async function registrarConsulta(data: any) {
     const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, {marcada: true})
     if (!atualizarHorarioMarcado) {
         throw new Error("Não existe consulta com essas informações")
+    }
+
+    const existDentista = await Dentistas.findOne({ _id: new Types.ObjectId(data.dentistaId)})
+    if (!existDentista) {
+        throw new Error("O id do dentista não existe")
     }
 
     await consulta.save()
