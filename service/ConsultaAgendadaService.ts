@@ -27,6 +27,8 @@ async function registrarConsulta(data: any) {
         throw new Error("O id do dentista não existe")
     }
 
+    consulta.nomeDentista = existDentista.nomeCompleto;
+
     await consulta.save()
     console.log("Consulta Registrada: " + consulta);
     return ("Consulta Marcada com Sucesso");
