@@ -1,6 +1,7 @@
 import  ConsultaAgendada  from '../models/ConsultaAgendada.ts'
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
+import  { montarData } from "../utilidades/functions.ts";
 
 async function registrarConsulta(data: any) {
     if(!data) throw new Error("Nenhum campo de consulta pode ser null");
@@ -12,7 +13,9 @@ async function registrarConsulta(data: any) {
     const consultaDuplicada = await ConsultaAgendada.findOne({ data: data.data, hora: data.hora, procedimento: data.procedimento });
     if (consultaDuplicada) throw new Error("Já existe uma Consulta Marcada para esse horário")
 
-    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: data.data, horario: data.hora, dentista: data.dentistaId }, {marcada: true})
+    const dataMontada = montarData(data.data, data.hora);
+
+    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: dataMontada, horario: data.hora, dentista: data.dentistaId }, {marcada: true})
     if (!atualizarHorarioMarcado) {
         throw new Error("Não existe consulta com essas informações")
     }
