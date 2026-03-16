@@ -48,6 +48,7 @@ async function lancarDatas(data: any) {
     if (!dentistaBuscado) {
         throw new Error("Não foi possível encontrar o Dentista procurado")
     }
+    datas.consultorio = dentistaBuscado.consultorio;
 
     return await datas.save();
 
