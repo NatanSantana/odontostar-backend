@@ -84,9 +84,18 @@ async function listarDentistaById(id: any) {
 
 }
 
+async function listarDentistaByCpf(cpfEnviado: any) {
+    const dentista = await Dentistas.findOne( { cpf: cpfEnviado });
+    if (!dentista) {
+        throw new Error("Não foi possível encontrar um dentista com esse CPF")
+    }
+    return dentista;
+
+}
 
 
 
 
 
-export { registrarDentista, lancarDatas, mostrarDatasByEspecialidade, listarDentistaById };
+
+export { registrarDentista, lancarDatas, mostrarDatasByEspecialidade, listarDentistaById, listarDentistaByCpf };

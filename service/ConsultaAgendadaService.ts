@@ -17,8 +17,11 @@ async function registrarConsulta(data: any) {
 
     const dataMontada = montarData(data.data, data.hora);
 
-    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate({data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, {marcada: true})
-    if (!atualizarHorarioMarcado) {
+    const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate(
+        {data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, {marcada: true}
+    )
+    
+        if (!atualizarHorarioMarcado) {
         throw new Error("Não existe consulta com essas informações")
     }
 

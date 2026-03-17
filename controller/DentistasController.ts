@@ -1,4 +1,4 @@
-import {registrarDentista, lancarDatas, mostrarDatasByEspecialidade, listarDentistaById } from '../service/DentistasService.ts'
+import {registrarDentista, lancarDatas, mostrarDatasByEspecialidade, listarDentistaById, listarDentistaByCpf } from '../service/DentistasService.ts'
 import { request, type Request, type Response } from 'express';
 
 export async function registrar(req: Request, res: Response) {
@@ -47,6 +47,21 @@ export async function listarById(req: Request, res: Response) {
 
         const { id } = req.query;
         const request = await listarDentistaById(id)
+        return res.status(200).json({ request })
+
+    } catch (error: any) {
+        res.status(500).json({
+            error: "Não foi possível buscar Dentistas",
+            message: error.message
+        })
+    }
+}
+
+export async function listarByCpf(req: Request, res: Response) {
+    try {
+
+        const { cpf } = req.query;
+        const request = await listarDentistaByCpf(cpf)
         return res.status(200).json({ request })
 
     } catch (error: any) {
