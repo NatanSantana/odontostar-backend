@@ -17,15 +17,16 @@ async function registrarDentista(data: any) {
 
 
 async function lancarDatas(data: any) {
+    const horaConsulta = parse(data.horario, "HH:mm", new Date())
     const horarioMaximo = parse("17:00", "HH:mm", new Date())
     const horarioMinimo = parse("08:00", "HH:mm", new Date())
     
-    if (!isValid(data.horario)) {
+    if (!isValid(horaConsulta)) {
         throw new Error(data.horario + " Este formato de horário não é permitido")
 
     }
 
-    const horaConsulta = parse(data.horario, "HH:mm", new Date())
+    
     data.data = addHours(data.data, horaConsulta.getHours())
     data.data = addMinutes(data.data, horaConsulta.getMinutes());
     data.marcada = false;
