@@ -6,10 +6,16 @@ import { parse, isBefore, isValid, isAfter, addHours, addMinutes } from "date-fn
 
 
 async function registrarDentista(data: any) {
-        const dentista = new Dentistas(data);
-        if (isNaN(Number(dentista.consultorio))) {
+        if(isNaN(Number(data.cpf)) && data.cpf.length === 11) throw new Error("O cpf deve conter apenas números e ter 11 dígitos")    
+
+        if (isNaN(Number(data.consultorio))) {
             throw new Error('Número do consultório deve ser um número válido.');
         }
+
+        const isConsultorioExist = await Dentistas.findOne({consultorio: data.consultorio})
+        if (isConsultorioExist) throw new Error("Já existe um Dentista Cadastrado nesse Consultório")
+
+        const dentista = new Dentistas(data);
         await dentista.save();
         return dentista;
     
