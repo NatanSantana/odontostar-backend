@@ -7,7 +7,6 @@ import  { montarData } from "../utilidades/functions.ts";
 
 async function registrarConsulta(data: any) {
     if(!data) throw new Error("Nenhum campo de consulta pode ser null");
-
     const consulta = new ConsultaAgendada(data);
     
     if(!consulta.email.endsWith("@gmail.com")) throw new Error("Email inválido")
@@ -15,27 +14,27 @@ async function registrarConsulta(data: any) {
     const consultaDuplicada = await ConsultaAgendada.findOne({ data: data.data, hora: data.hora, procedimento: data.procedimento });
     if (consultaDuplicada) throw new Error("Já existe uma Consulta Marcada para esse horário")
 
-    const dataMontada = montarData(data.data, data.hora);
+    const [horas, minutos] = data.hora.split(':');
+    const dataBase = new Date(data.data + 'T00:00:00.000Z');
+    const dataMontada = addMinutes(addHours(dataBase, Number(horas)), Number(minutos));
 
     const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate(
-        {data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, {marcada: true}
+        { data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, { marcada: true }
     )
     
-        if (!atualizarHorarioMarcado) {
+    if (!atualizarHorarioMarcado) {
         throw new Error("Não existe consulta com essas informações")
     }
 
-    const existDentista = await Dentistas.findOne({ _id: new Types.ObjectId(data.dentistaId)})
+    const existDentista = await Dentistas.findOne({ _id: new Types.ObjectId(data.dentistaId) })
     if (!existDentista) {
         throw new Error("O id do dentista não existe")
     }
 
     consulta.nomeDentista = existDentista.nomeCompleto;
-
     await consulta.save()
     console.log("Consulta Registrada: " + consulta);
     return ("Consulta Marcada com Sucesso");
-
 }
 
 async function marcarComoRealizada(data: any) {
