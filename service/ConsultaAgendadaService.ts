@@ -18,8 +18,6 @@ async function registrarConsulta(data: any) {
     const dataBase = new Date(data.data); 
     const dataMontada = addMinutes(addHours(dataBase, Number(horas)), Number(minutos));
 
-    console.log("dataMontada:", dataMontada);
-
     consulta.data = dataMontada;
 
     const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate(
