@@ -15,8 +15,12 @@ async function registrarConsulta(data: any) {
     if (consultaDuplicada) throw new Error("Já existe uma Consulta Marcada para esse horário")
 
     const [horas, minutos] = data.hora.split(':');
-    const dataBase = new Date(data.data); // ✅ já é ISO, não precisa concatenar
+    const dataBase = new Date(data.data); 
     const dataMontada = addMinutes(addHours(dataBase, Number(horas)), Number(minutos));
+
+    console.log("dataMontada:", dataMontada);
+
+    consulta.data = dataMontada;
 
     const atualizarHorarioMarcado = await DatasDisponiveis.findOneAndUpdate(
         { data: dataMontada, horario: data.hora, dentista: new Types.ObjectId(data.dentistaId) }, { marcada: true }
