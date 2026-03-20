@@ -3,10 +3,13 @@ import Dentistas from "../models/Dentistas.ts";
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import {addHours, addMinutes, parse, isAfter, format} from "date-fns";
 import { Types } from 'mongoose';
-import  { montarData } from "../utilidades/functions.ts";
+
 
 async function registrarConsulta(data: any) {
     if(!data) throw new Error("Nenhum campo de consulta pode ser null");
+    data.data = parse(data.data, 'dd/MM/yyyy', new Date());
+
+
     const consulta = new ConsultaAgendada(data);
     
     if(!consulta.email.endsWith("@gmail.com")) throw new Error("Email inválido")
