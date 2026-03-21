@@ -19,7 +19,7 @@ async function registrarDentista(data: any) {
         const isDentistaExist = await Dentistas.findOne({cpf: data.cpf})
         if (isDentistaExist) throw new Error("Já existe um Dentista Cadastrado com esse cpf")
 
-        const isDentistaHaveUser = await Users.findOne({cpf: data.cpf})
+        const isDentistaHaveUser = await Users.findOne({cpf: data.cpf, role: 'Dentista'})
         if (!isDentistaHaveUser) throw new Error("O Dentista deve ter um cpf cadastrado na tabela user")
 
         const dentista = new Dentistas(data);
