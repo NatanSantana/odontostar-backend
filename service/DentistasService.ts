@@ -1,4 +1,5 @@
 import Dentistas from "../models/Dentistas.ts";
+import Users from '../models/Users.ts';
 import DatasDisponiveis from "../models/DatasDisponiveis.ts";
 import { parse, isBefore, isValid, isAfter, addHours, addMinutes } from "date-fns";
 
@@ -17,6 +18,9 @@ async function registrarDentista(data: any) {
 
         const isDentistaExist = await Dentistas.findOne({cpf: data.cpf})
         if (isDentistaExist) throw new Error("Já existe um Dentista Cadastrado com esse cpf")
+
+        const isDentistaHaveUser = await Users.findOne({cpf: data.cpf})
+        if (!isDentistaHaveUser) throw new Error("O Dentista deve ter um cpf cadastrado na tabela user")
 
         const dentista = new Dentistas(data);
         await dentista.save();
