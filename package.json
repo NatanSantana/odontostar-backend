@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-  "build": "echo 'no build'",
+  "build": "nest build",
+  "start:prod": "node dist/main",
   "start": "npx ts-node --esm server.ts",
   "dev": "ts-node server.ts"
   },
